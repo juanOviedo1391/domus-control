@@ -1,51 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de LEDs - Domus Online</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f0f0f0; }
-        h1 { color: #333; }
-        button { padding: 15px 30px; margin: 20px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; }
-        .on { background-color: #28a745; color: white; }
-        .off { background-color: #dc3545; color: white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de LEDs</title>
+<style>
+body { font-family: Arial; text-align:center; margin-top:50px; }
+button { padding:15px 30px; margin:10px; font-size:18px; cursor:pointer; }
+</style>
 </head>
 <body>
-    <h1>Control de LEDs</h1>
-    <div>
-        <h2>LED 1</h2>
-        <button class="on" onclick="controlLED(1,1)">Encender</button>
-        <button class="off" onclick="controlLED(1,0)">Apagar</button>
-    </div>
-    <div>
-        <h2>LED 2</h2>
-        <button class="on" onclick="controlLED(2,1)">Encender</button>
-        <button class="off" onclick="controlLED(2,0)">Apagar</button>
-    </div>
 
-    <script>
-        // --- Configura tu Write API Key ---
-        const WRITE_API_KEY = 'IZUHJY2KACWBPPRM'; // tu Write API Key de ThingSpeak
+<h1>Control de LEDs desde Internet</h1>
 
-        async function controlLED(ledNumber, estado) {
-            const field = ledNumber === 1 ? 'field3' : 'field4';
-            const url = `https://api.thingspeak.com/update?api_key=${WRITE_API_KEY}&${field}=${estado}`;
-            
-            try {
-                const response = await fetch(url);
-                const result = await response.text();
-                if (response.ok) {
-                    alert(`LED ${ledNumber} ${estado ? 'Encendido' : 'Apagado'}\nEntry ID: ${result}`);
-                } else {
-                    alert('Error al enviar datos a ThingSpeak');
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Error de conexión');
-            }
+<button onclick="controlLED(1,1)">Encender LED1</button>
+<button onclick="controlLED(1,0)">Apagar LED1</button>
+<br>
+<button onclick="controlLED(2,1)">Encender LED2</button>
+<button onclick="controlLED(2,0)">Apagar LED2</button>
+
+<script>
+const channelID = '3126838';
+const writeAPIKey = '7LWB5MWCCC8VQTEJ';
+
+function controlLED(led, estado){
+    let field = (led===1) ? 'field3' : 'field4';
+    let url = `https://api.thingspeak.com/update?api_key=${writeAPIKey}&${field}=${estado}`;
+    fetch(url)
+    .then(resp=>resp.text())
+    .then(data=>{
+        if(data!="0"){
+            alert(`LED${led} actualizado correctamente`);
+        } else {
+            alert(`Error al actualizar LED${led}`);
         }
-    </script>
+    });
+}
+</script>
+
 </body>
 </html>
+
